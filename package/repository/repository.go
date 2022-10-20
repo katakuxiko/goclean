@@ -1,13 +1,17 @@
 package repository
 
-type Authorization struct {
+import (
+	"github.com/katakuxiko/clean_go/structure"
+	"github.com/jmoiron/sqlx"
+)
 
+type Authorization interface {
+	CreateUser(user structure.User)(int, error)
+	GetUser(username, password string)(structure.User,error)
 }
-type BooksList struct {
-
+type BooksList interface {
 }
-type BooksItem struct{
-
+type BooksItem interface {
 }
 type Repository struct {
 	Authorization
@@ -15,6 +19,8 @@ type Repository struct {
 	BooksItem
 }
 
-func NewRepository()*Repository {
-	return &Repository{}
+func NewRepository(db *sqlx.DB) *Repository {
+	return &Repository{
+		Authorization:NewAuthPostgress(db),
+	}
 }

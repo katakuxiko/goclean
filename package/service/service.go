@@ -1,12 +1,17 @@
 package service
 
-import "github.com/katakuxiko/clean_go/package/repository"
+import (
+	"github.com/katakuxiko/clean_go/package/repository"
+	"github.com/katakuxiko/clean_go/structure"
+)
 
-type Authorization struct {
+type Authorization interface {
+	CreateUser(user structure.User)(int, error) 
+	GenerateToken(username, password string)(string, error) 
 }
-type BooksList struct {
+type BooksList interface {
 }
-type BooksItem struct {
+type BooksItem interface {
 }
 type Service struct {
 	Authorization
@@ -15,5 +20,7 @@ type Service struct {
 }
 
 func NewService(repo *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repo.Authorization),
+	}
 }

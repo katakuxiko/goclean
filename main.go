@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
 	"os"
+
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 
 	"github.com/katakuxiko/clean_go/package/handler"
 	"github.com/katakuxiko/clean_go/package/repository"
@@ -12,20 +13,25 @@ import (
 )
 func init() {
     if err := godotenv.Load(); err != nil {
-        log.Print("No .env file found")
+        logrus.Print("No .env file found")
     } else{
-		log.Print("Config is OK")
+		logrus.Print("Config is OK")
 	}
 }
 func main(){
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 	port := os.Getenv("PORT")
-	repos := repository.NewRepository()
+	dbUrl:= os.Getenv("DATABASE_URL")
+	db, err := repository.NewPostgresDB(dbUrl)
+	if err != nil {
+		logrus.Fatalf("Could not connect to database: %v", err)
+	}
+	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
-	
 	srv := new(structure.Server)
 	if err := srv.Run(port,handlers.InitRoutes()); err !=nil{
-		log.Fatalf("error while runnig server:%s", err.Error())
+		logrus.Fatalf("error while runnig server:%s", err.Error())
 	}
 }
 
