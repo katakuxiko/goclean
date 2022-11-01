@@ -10,6 +10,8 @@ type Authorization interface {
 	GetUser(username, password string)(structure.User,error)
 }
 type BooksList interface {
+	Create(userId int, books structure.BooksList)(int, error)
+
 }
 type BooksItem interface {
 }
@@ -22,5 +24,6 @@ type Repository struct {
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization:NewAuthPostgress(db),
+		BooksList: NewBooksListPostgres(db),
 	}
 }
