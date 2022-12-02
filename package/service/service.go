@@ -18,6 +18,9 @@ type BooksList interface {
 	Update(userId, listId int, input structure.UpdateListInput) error
 }
 type BooksItem interface {
+	Create(userId,listId int, item structure.BookdItem)(int, error)
+	GetAll(userId int, listId int) ([]structure.BookdItem,error)
+
 }
 type Service struct {
 	Authorization

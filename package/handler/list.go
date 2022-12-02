@@ -2,8 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
-
+	"strconv"	
 	"github.com/gin-gonic/gin"
 	"github.com/katakuxiko/clean_go/structure"
 )
