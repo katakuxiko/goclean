@@ -19,7 +19,9 @@ type BooksList interface {
 type BooksItem interface {
 	Create(listId int, item structure.BookdItem)(int, error)
 	GetAll(userId int, listId int) ([]structure.BookdItem,error)
-
+	GetById(userId int, itemId int) (structure.BookdItem,error)
+	Delete(userId int, id int) error
+	Update(userId, itemId int, input structure.UpdateItemInput) error
 }
 type Repository struct {
 	Authorization

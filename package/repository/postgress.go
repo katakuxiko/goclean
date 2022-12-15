@@ -7,7 +7,7 @@ import (
 const(
 	userTable = "users"
 	booksListsTable = "books_list"
-	booksItemTable = "books_item"
+	booksItemTable = "books_items"
 	usersListsTable = "users_list"
 	listItemsTable = "list_items"
 )

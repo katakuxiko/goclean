@@ -24,16 +24,28 @@ type BookdItem struct {
 type ListItem struct {
 	Id     int `json:"id"`
 	ListId int `json:"list"`
-	ItemId int
+	ItemId int `json:"itemId"`
 }
 
 type UpdateListInput struct {
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
 }
+type UpdateItemInput struct {
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
+	Done        *bool   `json:"done"`
+
+}
 
 func (i UpdateListInput) Validate() error {
 	if i.Title == nil && i.Description == nil {
+		return errors.New("update structure has no value")
+	}
+	return nil
+}
+func (i UpdateItemInput) Validate() error {
+	if i.Title == nil && i.Description == nil  && i.Done == nil {
 		return errors.New("update structure has no value")
 	}
 	return nil

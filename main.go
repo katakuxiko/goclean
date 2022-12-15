@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -30,8 +33,22 @@ func main(){
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 	srv := new(structure.Server)
-	if err := srv.Run(port,handlers.InitRoutes()); err !=nil{
+	go func() {
+		if err := srv.Run(port,handlers.InitRoutes()); err !=nil{
 		logrus.Fatalf("error while runnig server:%s", err.Error())
+	}
+	}()
+	logrus.Print("App started")
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<- quit
+	logrus.Print("Shutting down")
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutdown %s", err)
+	}
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured on db connection close %s", err)
+
 	}
 }
 

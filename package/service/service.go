@@ -20,6 +20,9 @@ type BooksList interface {
 type BooksItem interface {
 	Create(userId,listId int, item structure.BookdItem)(int, error)
 	GetAll(userId int, listId int) ([]structure.BookdItem,error)
+	GetById(userId int, itemId int) (structure.BookdItem,error)
+	Delete(userId int, itemId int)error
+	Update(userId, itemId int, input structure.UpdateItemInput) error
 
 }
 type Service struct {
@@ -32,5 +35,6 @@ func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repo.Authorization),
 		BooksList: NewBooksListService(repo.BooksList),
+		BooksItem: NewBooksItemService(repo.BooksItem, repo.BooksList),
 	}
 }
