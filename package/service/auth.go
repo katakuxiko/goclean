@@ -13,7 +13,7 @@ import (
 const (
 	salt = "1easg34tgregv"
 	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	toketTTL = 12 * time.Hour
+	toketTTL = 120 * time.Hour
 )
 
 type tokenClaims struct {
@@ -67,7 +67,7 @@ func (s *AuthService)ParseToken(accessToken string)(int, error){
 
 	return claims.UserId, nil
 }
-
+ 
 func generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))

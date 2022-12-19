@@ -1,7 +1,10 @@
 package handler
 
 import (
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
 	"github.com/katakuxiko/clean_go/package/service"
 )
 
@@ -15,17 +18,20 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+	confgisGin := cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000","https://cdpn.io"},
+		AllowMethods:     []string{"POST","GET","PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin","Authorization","Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
 
-	auth := router.Group("/auth")
-	{
-		auth.POST("/sign-up", h.signUp)
-		auth.POST("/sign-in", h.signIn)
-	}
-
+	})
+	router.Use(confgisGin)
 	api := router.Group("/api", h.userIdentity)
 	{
+		api.Use(confgisGin)
 		lists := api.Group("/lists")
 		{
+			lists.Use(confgisGin)
 			lists.POST("/", h.createList)
 			lists.GET("/", h.getAllLists)
 			lists.GET("/:id", h.getListById)
@@ -46,6 +52,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			items.DELETE("/:id", h.deleteItem)
 		}
 	}
+	auth := router.Group("/auth")
+	{
+		auth.POST("/sign-up", h.signUp)
+		auth.POST("/sign-in", h.signIn)
+	}
+	
 
 	return router
 }
