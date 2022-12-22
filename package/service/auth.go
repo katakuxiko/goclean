@@ -13,7 +13,7 @@ import (
 const (
 	salt = "1easg34tgregv"
 	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	toketTTL = 120 * time.Hour
+	toketTTL = 36 * time.Hour
 )
 
 type tokenClaims struct {
@@ -49,6 +49,21 @@ func (s *AuthService) GenerateToken(username,password string)(string, error){
 
 	return token.SignedString([]byte(signingKey))
 }
+func (s *AuthService) RefreshToken(oldToken string)(string,error){
+	id,err :=s.ParseToken(oldToken);
+	if err != nil{
+		return "",err
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(toketTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		id,
+	})
+
+	return token.SignedString([]byte(signingKey))
+}
 func (s *AuthService)ParseToken(accessToken string)(int, error){
 	token,err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token)(interface{},error){
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC);!ok{
@@ -73,4 +88,7 @@ func generatePasswordHash(password string) string {
 	hash.Write([]byte(password))
 
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
+}
+func (s *AuthService)GetUser(username, password string)(structure.User,error){
+	return s.repo.GetUser(username,generatePasswordHash(password))
 }

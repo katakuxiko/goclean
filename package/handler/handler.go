@@ -26,6 +26,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	})
 	router.Use(confgisGin)
+	auth := router.Group("/auth")
+	{
+		auth.POST("/sign-up", h.signUp)
+		auth.POST("/sign-in", h.signIn)
+		auth.POST("/refresh", h.RefreshToken)
+	}
 	api := router.Group("/api", h.userIdentity)
 	{
 		api.Use(confgisGin)
@@ -52,11 +58,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			items.DELETE("/:id", h.deleteItem)
 		}
 	}
-	auth := router.Group("/auth")
-	{
-		auth.POST("/sign-up", h.signUp)
-		auth.POST("/sign-in", h.signIn)
-	}
+	
 	
 
 	return router

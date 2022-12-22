@@ -29,6 +29,11 @@ type singInInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type token struct {
+	Token string `json:"token"`
+}
+
+
 func (h *Handler) signIn(c *gin.Context) {
 	var input singInInput
 
@@ -41,7 +46,30 @@ func (h *Handler) signIn(c *gin.Context) {
 		NewErrorResponse(c,http.StatusBadRequest, err.Error())
 		return
 	}
+	user, err := h.service.GetUser(input.Username,input.Password)
+	if err != nil {
+		NewErrorResponse(c,http.StatusBadRequest, err.Error())
+		return
+	}
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"token" : token,
+		"user": user,
+		"userId": user.Id,
+		
+	})
+}
+func (h *Handler) RefreshToken(c *gin.Context){
+	var token token
+	if err := c.BindJSON(&token); err != nil {
+		NewErrorResponse(c,http.StatusBadRequest, err.Error())
+		return
+	}
+	newToken,err := h.service.RefreshToken(token.Token);
+	if err != nil {
+		NewErrorResponse(c,http.StatusBadRequest, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token" : newToken,
 	})
 }

@@ -23,6 +23,9 @@ type BooksItem interface {
 	Delete(userId int, id int) error
 	Update(userId, itemId int, input structure.UpdateItemInput) error
 }
+// type Users interface{
+// 	GetById
+// }
 type Repository struct {
 	Authorization
 	BooksList

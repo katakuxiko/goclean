@@ -9,6 +9,8 @@ type Authorization interface {
 	CreateUser(user structure.User)(int, error) 
 	GenerateToken(username, password string)(string, error) 
 	ParseToken(token string)(int, error)
+	GetUser(username, password string)(structure.User,error)
+	RefreshToken(oldToken string)(string,error)
 }
 type BooksList interface {
 	Create(userId int, books structure.BooksList)(int, error)
