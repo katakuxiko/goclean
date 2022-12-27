@@ -4,7 +4,6 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
 	"github.com/katakuxiko/clean_go/package/service"
 )
 
@@ -19,11 +18,10 @@ func NewHandler(service *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 	confgisGin := cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000","https://cdpn.io"},
-		AllowMethods:     []string{"POST","GET","PUT", "PATCH"},
+		AllowOrigins:     []string{"http://localhost:3000","https://cdpn.io","https://silver-capybara-b0969e.netlify.app"},
+		AllowMethods:     []string{"POST","GET","PUT", "PATCH","Delete"},
 		AllowHeaders:     []string{"Origin","Authorization","Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
-
 	})
 	router.Use(confgisGin)
 	auth := router.Group("/auth")
@@ -34,10 +32,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	}
 	api := router.Group("/api", h.userIdentity)
 	{
-		api.Use(confgisGin)
 		lists := api.Group("/lists")
 		{
-			lists.Use(confgisGin)
 			lists.POST("/", h.createList)
 			lists.GET("/", h.getAllLists)
 			lists.GET("/:id", h.getListById)

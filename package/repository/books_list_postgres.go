@@ -25,8 +25,8 @@ func (r *BooksListPostgres) Create(userId int, list structure.BooksList)(int, er
 	}
 
 	var id int
-	createBooksQuery := fmt.Sprintf("INSERT INTO %s (title, description) VALUES ($1, $2) RETURNING id",booksListsTable)
-	row := tx.QueryRow(createBooksQuery,list.Title, list.Description)
+	createBooksQuery := fmt.Sprintf("INSERT INTO %s (title, description, img) VALUES ($1, $2, $3) RETURNING id",booksListsTable)
+	row := tx.QueryRow(createBooksQuery,list.Title, list.Description,list.ImgUrl)
 	if err = row.Scan(&id); err != nil {
 		tx.Rollback()
 		return 0, err
@@ -41,7 +41,7 @@ func (r *BooksListPostgres) Create(userId int, list structure.BooksList)(int, er
 }
 func (r *BooksListPostgres) GetAll(userId int)([]structure.BooksList,error){
 	var lists []structure.BooksList
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1",
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.img, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1",
 		booksListsTable, usersListsTable)
 	err := r.db.Select(&lists, query, userId)
 
