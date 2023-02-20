@@ -70,14 +70,26 @@ func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdIt
 	return itemsMarshal, nil
 }
 func (r *BooksItemPostgress) GetById(userId int, itemId int) (structure.BookdItem,error){
-	var item structure.BookdItem
-	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti INNER JOIN %s li on li.item_id = ti.id
-									INNER JOIN %s ul on ul.list_id = li.list_id WHERE ti.id = $1 AND ul.user_id = $2`, booksItemTable, listItemsTable, usersListsTable)
-	if err := r.db.Get(&item, query, itemId, userId); err != nil {
-		return item, err
-	}
+	var item structure.BookdItemSelect
+	var itemsMarshal structure.BookdItem
+	var buttons []structure.ButtonStruct
 
-	return item, nil
+	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.Buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
+									INNER JOIN %s ul on ul.list_id = li.list_id WHERE ti.id = $1 AND ul.user_id = $2`, booksItemTable, listItemsTable, usersListsTable)
+	err := r.db.Get(&item, query, itemId, userId); 
+	json.Unmarshal(item.Buttons, &buttons)
+	itemsMarshal.Id=item.Id
+	itemsMarshal.Description=item.Description
+	itemsMarshal.Done=item.Done
+	itemsMarshal.Title=item.Title
+	itemsMarshal.Condition=item.Condition
+	itemsMarshal.Buttons= buttons
+	if err != nil {
+		return itemsMarshal, err
+	}
+	
+
+	return itemsMarshal, nil
 }
 func(r *BooksItemPostgress)	Delete(userId int, itemId int)error{
 	query := fmt.Sprintf(`DELETE FROM %s ti USING %s li, %s ul WHERE ti.id = li.item_id AND li.list_id = ul.list_id AND
