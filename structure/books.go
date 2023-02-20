@@ -30,7 +30,7 @@ type BookdItem struct {
 	Title       string `json:"title" db:"title" binding:"required"`
 	Description string `json:"description" db:"description"`
 	Done        bool   `json:"done" db:"done"`
-	Buttons ButtonStruct `json:"buttons" db:"buttons"`
+	Buttons []ButtonStruct `json:"buttons" db:"buttons"`
 	// Variables []string `json:"variables" db:"variables"`
 	Condition string `json:"condition" db:"condition"`
 }

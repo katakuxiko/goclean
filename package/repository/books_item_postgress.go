@@ -47,15 +47,27 @@ func (r *BooksItemPostgress) Create(listId int, item structure.BookdItem)(int, e
 	return itemId, tx.Commit()
 }
 
-func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdItemSelect, error){
+func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdItem, error){
 	var items []structure.BookdItemSelect
+	var itemsMarshal []structure.BookdItem
+	var itemsMarshalSolo structure.BookdItem
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
 									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 AND ul.user_id = $2`, booksItemTable, listItemsTable, usersListsTable)
 	if err := r.db.Select(&items, query, listId, userId); err != nil {
 		return nil, err
 	}
-	json.Unmarshal(items.Buttons, &structure.ButtonStruct)
-	return items, nil
+	var buttons []structure.ButtonStruct
+	for _, item := range items {
+		itemsMarshalSolo.Id = item.Id
+		itemsMarshalSolo.Title = item.Title
+		itemsMarshalSolo.Description = item.Description
+		itemsMarshalSolo.Condition = item.Condition
+		itemsMarshalSolo.Done = item.Done
+		json.Unmarshal(item.Buttons, &buttons)
+		itemsMarshalSolo.Buttons = buttons
+		itemsMarshal = append(itemsMarshal,itemsMarshalSolo)
+	}
+	return itemsMarshal, nil
 }
 func (r *BooksItemPostgress) GetById(userId int, itemId int) (structure.BookdItem,error){
 	var item structure.BookdItem
