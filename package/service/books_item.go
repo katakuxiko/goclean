@@ -23,7 +23,7 @@ func (s *BooksItemService) Create(userId,listId int, item structure.BookdItem)(i
 
 	return s.repo.Create(listId,item)
 }
-func (s *BooksItemService) GetAll(userId,listId int)([]structure.BookdItem,error){
+func (s *BooksItemService) GetAll(userId,listId int)([]structure.BookdItemSelect,error){
 	return s.repo.GetAll(userId,listId)
 }
 func (s *BooksItemService) GetById(userId int, itemId int) (structure.BookdItem,error){

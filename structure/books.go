@@ -15,12 +15,35 @@ type UserList struct {
 	ListId int
 }
 
+type ButtonStruct struct {
+	BtnName string `json:"btnName" `
+	BtnAction int `json:"btnAction" `
+	BtnVar string `json:"btnVar"`
+}
+
+// type Variables struct {
+
+// }
+
 type BookdItem struct {
 	Id          int    `json:"id" db:"id"`
 	Title       string `json:"title" db:"title" binding:"required"`
 	Description string `json:"description" db:"description"`
 	Done        bool   `json:"done" db:"done"`
+	Buttons ButtonStruct `json:"buttons" db:"buttons"`
+	// Variables []string `json:"variables" db:"variables"`
+	Condition string `json:"condition" db:"condition"`
 }
+type BookdItemSelect struct {
+	Id          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title" binding:"required"`
+	Description string `json:"description" db:"description"`
+	Done        bool   `json:"done" db:"done"`
+	Buttons []byte `json:"buttons" db:"buttons"`
+	// Variables []string `json:"variables" db:"variables"`
+	Condition string `json:"condition" db:"condition"`
+}
+
 
 type ListItem struct {
 	Id     int `json:"id"`

@@ -1,10 +1,12 @@
 package repository
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/katakuxiko/clean_go/structure"
-	"strings"
 )
 
 type BooksItemPostgress struct {
@@ -21,10 +23,14 @@ func (r *BooksItemPostgress) Create(listId int, item structure.BookdItem)(int, e
 	if err != nil {
 		return 0, err
 	}
+    btn, err := json.Marshal(&item.Buttons);
+	if err != nil {
+		return 0, err
+	}
 
 	var itemId int
-	createItemQuery := fmt.Sprintf("INSERT INTO %s (title, description) values ($1, $2) RETURNING id",booksItemTable)
-	row := tx.QueryRow(createItemQuery, item.Title, item.Description)
+	createItemQuery := fmt.Sprintf("INSERT INTO %s (title, description,buttons,condition) values ($1, $2, $3, $4) RETURNING id",booksItemTable)
+	row := tx.QueryRow(createItemQuery, item.Title, item.Description, btn, item.Condition)
 	err = row.Scan(&itemId)
 	if err != nil {
 		tx.Rollback()
@@ -41,14 +47,14 @@ func (r *BooksItemPostgress) Create(listId int, item structure.BookdItem)(int, e
 	return itemId, tx.Commit()
 }
 
-func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdItem, error){
-	var items []structure.BookdItem
-	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti INNER JOIN %s li on li.item_id = ti.id
+func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdItemSelect, error){
+	var items []structure.BookdItemSelect
+	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
 									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 AND ul.user_id = $2`, booksItemTable, listItemsTable, usersListsTable)
 	if err := r.db.Select(&items, query, listId, userId); err != nil {
 		return nil, err
 	}
-
+	json.Unmarshal(items.Buttons, &structure.ButtonStruct)
 	return items, nil
 }
 func (r *BooksItemPostgress) GetById(userId int, itemId int) (structure.BookdItem,error){

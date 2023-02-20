@@ -18,7 +18,7 @@ type BooksList interface {
 }
 type BooksItem interface {
 	Create(listId int, item structure.BookdItem)(int, error)
-	GetAll(userId int, listId int) ([]structure.BookdItem,error)
+	GetAll(userId int, listId int) ([]structure.BookdItemSelect,error)
 	GetById(userId int, itemId int) (structure.BookdItem,error)
 	Delete(userId int, id int) error
 	Update(userId, itemId int, input structure.UpdateItemInput) error
