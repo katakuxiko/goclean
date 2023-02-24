@@ -18,7 +18,7 @@ func NewHandler(service *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 	confgisGin := cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000","https://silver-capybara-b0969e.netlify.app"},
+		AllowOrigins:     []string{"http://localhost:3000","https://silver-capybara-b0969e.netlify.app","https://avxm.netlify.app"},
 		AllowMethods:     []string{"POST","GET","PUT", "PATCH","Delete"},
 		AllowHeaders:     []string{"Origin","Authorization","Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
