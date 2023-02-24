@@ -11,7 +11,8 @@ type Authorization interface {
 }
 type BooksList interface {
 	Create(userId int, books structure.BooksList)(int, error)
-	GetAll(userId int)([]structure.BooksList,error)
+	GetAll(userId int,pageParam string)([]structure.BooksList,error)
+	GetUserBooksAll(userId int)([]structure.BooksList,error)
 	GetById(userId int, id int) (structure.BooksList,error)
 	Delete(userId int, id int) error
 	Update(userId, listId int, input structure.UpdateListInput) error

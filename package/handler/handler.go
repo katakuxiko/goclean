@@ -47,6 +47,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 			}
 		}
+		userList := api.Group("/userList")
+			{
+				userList.GET("/", h.getUserBooksAll)
+			}
 		items := api.Group("/items")
 		{
 			items.GET("/:id", h.getItemById)

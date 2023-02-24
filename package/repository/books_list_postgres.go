@@ -39,7 +39,16 @@ func (r *BooksListPostgres) Create(userId int, list structure.BooksList)(int, er
 	}
 	return id, tx.Commit()
 }
-func (r *BooksListPostgres) GetAll(userId int)([]structure.BooksList,error){
+func (r *BooksListPostgres) GetAll(userId int,pageParam string)([]structure.BooksList,error){
+	var lists []structure.BooksList
+	
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.img, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id LIMIT %s",
+		booksListsTable, usersListsTable, pageParam)
+	err := r.db.Select(&lists, query)
+
+	return lists, err
+}
+func (r *BooksListPostgres) GetUserBooksAll(userId int)([]structure.BooksList,error){
 	var lists []structure.BooksList
 	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.img, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1",
 		booksListsTable, usersListsTable)
@@ -49,7 +58,7 @@ func (r *BooksListPostgres) GetAll(userId int)([]structure.BooksList,error){
 }
 func (r *BooksListPostgres) GetById(userId int, listId int) (structure.BooksList,error){
 	var list structure.BooksList
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 and ul.list_id=$2",
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description, tl.img FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 and ul.list_id=$2",
 		booksListsTable, usersListsTable)
 	err := r.db.Get(&list, query, userId,listId)
 

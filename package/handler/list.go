@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
-	"strconv"	
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/katakuxiko/clean_go/structure"
 )
@@ -36,11 +38,16 @@ type getAllListsResponse struct {
 
 func (h *Handler) getAllLists(c *gin.Context) {
 	userId,err := getUserId(c)
+	pageParam := c.Query("limit")
+	if pageParam == "" {
+		pageParam ="5"
+	}
+	fmt.Print(pageParam)
 	if err != nil{
 		NewErrorResponse(c,http.StatusInternalServerError,"user id not found")
 		return
 	}
-	lists,err := h.service.BooksList.GetAll(userId)
+	lists,err := h.service.BooksList.GetAll(userId, pageParam)
 	if err != nil {
 		NewErrorResponse(c,http.StatusInternalServerError,err.Error())
 		return
@@ -50,6 +57,25 @@ func (h *Handler) getAllLists(c *gin.Context) {
 		Data: lists,
 	})
 }
+
+func (h *Handler) getUserBooksAll(c *gin.Context) {
+	userId,err := getUserId(c)
+	
+	if err != nil{
+		NewErrorResponse(c,http.StatusInternalServerError,"user id not found")
+		return
+	}
+	lists,err := h.service.BooksList.GetUserBooksAll(userId)
+	if err != nil {
+		NewErrorResponse(c,http.StatusInternalServerError,err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK,getAllListsResponse{
+		Data: lists,
+	})
+}
+
 
 func (h *Handler) getListById(c *gin.Context) {
 	userId,err := getUserId(c)
