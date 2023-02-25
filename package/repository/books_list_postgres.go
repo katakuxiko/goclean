@@ -58,9 +58,9 @@ func (r *BooksListPostgres) GetUserBooksAll(userId int)([]structure.BooksList,er
 }
 func (r *BooksListPostgres) GetById(userId int, listId int) (structure.BooksList,error){
 	var list structure.BooksList
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description, tl.img FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 and ul.list_id=$2",
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description, tl.img FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.list_id=$1 ",
 		booksListsTable, usersListsTable)
-	err := r.db.Get(&list, query, userId,listId)
+	err := r.db.Get(&list, query, listId)
 
 	return list, err
 }

@@ -52,8 +52,8 @@ func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdIt
 	var itemsMarshal []structure.BookdItem
 	var itemsMarshalSolo structure.BookdItem
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
-									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 AND ul.user_id = $2`, booksItemTable, listItemsTable, usersListsTable)
-	if err := r.db.Select(&items, query, listId, userId); err != nil {
+									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1`, booksItemTable, listItemsTable, usersListsTable)
+	if err := r.db.Select(&items, query, listId); err != nil {
 		return nil, err
 	}
 	var buttons []structure.ButtonStruct
@@ -75,8 +75,8 @@ func (r *BooksItemPostgress) GetById(userId int, itemId int) (structure.BookdIte
 	var buttons []structure.ButtonStruct
 
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.Buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
-									INNER JOIN %s ul on ul.list_id = li.list_id WHERE ti.id = $1 AND ul.user_id = $2`, booksItemTable, listItemsTable, usersListsTable)
-	err := r.db.Get(&item, query, itemId, userId); 
+									INNER JOIN %s ul on ul.list_id = li.list_id WHERE ti.id = $1 `, booksItemTable, listItemsTable, usersListsTable)
+	err := r.db.Get(&item, query, itemId); 
 	json.Unmarshal(item.Buttons, &buttons)
 	itemsMarshal.Id=item.Id
 	itemsMarshal.Description=item.Description
