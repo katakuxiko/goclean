@@ -17,7 +17,7 @@ type UserList struct {
 
 type ButtonStruct struct {
 	BtnName string `json:"btnName" `
-	BtnAction int `json:"btnAction" `
+	BtnAction string `json:"btnAction" `
 	BtnVar string `json:"btnVar"`
 }
 
