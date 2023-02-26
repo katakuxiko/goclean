@@ -27,16 +27,24 @@ type BooksItem interface {
 	Delete(userId int, itemId int)error
 	Update(userId, itemId int, input structure.UpdateItemInput) error
 }
+
+type User interface {
+	Create(userId int, userVariables structure.UsersVariables) (int, error)
+}
+
 type Service struct {
 	Authorization
 	BooksList
 	BooksItem
+	User
 }
+
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repo.Authorization),
 		BooksList: NewBooksListService(repo.BooksList),
 		BooksItem: NewBooksItemService(repo.BooksItem, repo.BooksList),
+		User: NewUserService(repo.User),
 	}
 }

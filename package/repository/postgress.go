@@ -10,6 +10,7 @@ const(
 	booksItemTable = "books_items"
 	usersListsTable = "users_list"
 	listItemsTable = "list_items"
+	usersVariablesTable = "users_variables"
 )
 func NewPostgresDB(url string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("pgx", url)

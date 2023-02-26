@@ -24,6 +24,10 @@ type BooksItem interface {
 	Delete(userId int, id int) error
 	Update(userId, itemId int, input structure.UpdateItemInput) error
 }
+
+type User interface {
+	Create(userId int, userVariables structure.UsersVariables) (int, error)
+}
 // type Users interface{
 // 	GetById
 // }
@@ -31,6 +35,7 @@ type Repository struct {
 	Authorization
 	BooksList
 	BooksItem
+	User
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -38,5 +43,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Authorization:NewAuthPostgress(db),
 		BooksList: NewBooksListPostgres(db),
 		BooksItem: NewBooksItemPostgress(db),
+		User: NewUserPostgres(db),
 	}
 }
