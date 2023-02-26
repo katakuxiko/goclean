@@ -19,6 +19,11 @@ func (h *Handler) signUp(c *gin.Context) {
 		NewErrorResponse(c,http.StatusBadRequest, err.Error())
 		return
 	}
+	_,err = h.service.User.Create(id, structure.UsersVariables{Variables: " "})
+	if err != nil {
+		NewErrorResponse(c,http.StatusBadRequest, err.Error())
+		return
+	}
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id" : id,
 	})
