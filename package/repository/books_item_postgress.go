@@ -52,7 +52,7 @@ func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdIt
 	var itemsMarshal []structure.BookdItem
 	var itemsMarshalSolo structure.BookdItem
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
-									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1`, booksItemTable, listItemsTable, usersListsTable)
+									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 ORDER by id`, booksItemTable, listItemsTable, usersListsTable)
 	if err := r.db.Select(&items, query, listId); err != nil {
 		return nil, err
 	}

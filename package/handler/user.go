@@ -28,9 +28,6 @@ func (h *Handler) createUserVariables(c *gin.Context) {
 	})
 }
 
-type getAllVariablesResponse struct {
-	Data structure.UsersVariables `json:"data"`
-}
 
 func (h *Handler) updateVariablesUser(c *gin.Context) {
 	userId,err := getUserId(c)
@@ -72,7 +69,5 @@ func (h *Handler) getAllVariables(c *gin.Context){
 		return
 	}
 
-	c.JSON(http.StatusOK,getAllVariablesResponse{
-		Data: variables,
-	})
+	c.JSON(http.StatusOK,variables)
 }
