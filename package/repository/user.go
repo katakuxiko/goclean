@@ -32,3 +32,9 @@ func (r *UserPostgres) Create(userId int, userVariables structure.UsersVariables
 	
 	return id, tx.Commit()
 }
+
+func (r *UserPostgres) Update(userId int, input structure.UpdateUserVariables) error {
+	query := fmt.Sprintf("UPDATE %s SET variables = $1 WHERE user_id = $2", usersVariablesTable)
+	_, err := r.db.Exec(query,input.Variables,userId)
+	return err
+}

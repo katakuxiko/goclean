@@ -16,3 +16,11 @@ func NewUserService(repo repository.User) *UserService {
 func (s *UserService) Create(userId int, userVariables structure.UsersVariables) (int, error) {
 	return s.repo.Create(userId, userVariables)
 }
+
+func (s *UserService)  Update(userId int, input structure.UpdateUserVariables) error{
+	// if err := input.Validate(); err != nil {
+	// 	return err
+	// }
+
+	return s.repo.Update(userId, input)
+}

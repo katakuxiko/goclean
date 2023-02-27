@@ -27,3 +27,30 @@ func (h *Handler) createUserVariables(c *gin.Context) {
 		"id":id,
 	})
 }
+
+func (h *Handler) updateVariablesUser(c *gin.Context) {
+	userId,err := getUserId(c)
+	if err != nil{
+		NewErrorResponse(c,http.StatusInternalServerError,"user id not found")
+		return
+	}
+	if err != nil{
+		NewErrorResponse(c,http.StatusInternalServerError,"invalid id param")
+		return
+	}
+	
+	var input structure.UpdateUserVariables
+	if err := c.BindJSON(&input); err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	err = h.service.User.Update(userId,input)
+	if err != nil {
+		NewErrorResponse(c,http.StatusInternalServerError,err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK,StatusResponse{
+		Status: "ok",
+	})
+}

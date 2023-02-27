@@ -12,3 +12,7 @@ type UsersVariables struct {
 	UserId int `json:"user_id" db:"user_id"`
 	Variables string `json:"variables" db:"variables"`
 }
+
+type UpdateUserVariables struct {
+	Variables string `json:"variables" db:"variables"`
+}

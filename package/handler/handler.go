@@ -51,6 +51,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			{
 				userList.GET("/", h.getUserBooksAll)
 				userList.POST("/variables", h.createUserVariables)
+				userList.PUT("/", h.updateVariablesUser)
 			}
 		items := api.Group("/items")
 		{
