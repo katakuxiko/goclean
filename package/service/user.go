@@ -24,3 +24,7 @@ func (s *UserService)  Update(userId int, input structure.UpdateUserVariables) e
 
 	return s.repo.Update(userId, input)
 }
+
+func (s *UserService) GetAllVariables(userId int) (structure.UsersVariables,error){
+	return s.repo.GetAllVariables(userId)
+}

@@ -38,3 +38,12 @@ func (r *UserPostgres) Update(userId int, input structure.UpdateUserVariables) e
 	_, err := r.db.Exec(query,input.Variables,userId)
 	return err
 }
+
+func (r *UserPostgres) GetAllVariables(userId int) (structure.UsersVariables,error) {
+	var response structure.UsersVariables
+
+	query := fmt.Sprintf("SELECT id, user_id, variables FROM %s WHERE user_id=$1", usersVariablesTable)
+	err := r.db.Get(&response,query,userId);
+	return response,err
+	
+}

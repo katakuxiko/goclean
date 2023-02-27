@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/katakuxiko/clean_go/structure"
 	"github.com/jmoiron/sqlx"
+	"github.com/katakuxiko/clean_go/structure"
 )
 
 type Authorization interface {
@@ -28,6 +28,7 @@ type BooksItem interface {
 type User interface {
 	Create(userId int, userVariables structure.UsersVariables) (int, error)
 	Update(userId int, input structure.UpdateUserVariables) error
+	GetAllVariables(userId int) (structure.UsersVariables,error)
 }
 // type Users interface{
 // 	GetById

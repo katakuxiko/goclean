@@ -47,11 +47,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 			}
 		}
-		userList := api.Group("/userList")
+		userVariables := api.Group("/user-variables")
 			{
-				userList.GET("/", h.getUserBooksAll)
-				userList.POST("/variables", h.createUserVariables)
-				userList.PUT("/", h.updateVariablesUser)
+				userVariables.GET("/", h.getUserBooksAll)
+				userVariables.POST("/", h.createUserVariables)
+				userVariables.GET("/variables", h.getAllVariables)
+				userVariables.PUT("/", h.updateVariablesUser)
 			}
 		items := api.Group("/items")
 		{

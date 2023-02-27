@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -42,7 +41,7 @@ func (h *Handler) getAllLists(c *gin.Context) {
 	if pageParam == "" {
 		pageParam ="5"
 	}
-	fmt.Print(pageParam)
+
 	if err != nil{
 		NewErrorResponse(c,http.StatusInternalServerError,"user id not found")
 		return

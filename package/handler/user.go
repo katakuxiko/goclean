@@ -28,6 +28,10 @@ func (h *Handler) createUserVariables(c *gin.Context) {
 	})
 }
 
+type getAllVariablesResponse struct {
+	Data structure.UsersVariables `json:"data"`
+}
+
 func (h *Handler) updateVariablesUser(c *gin.Context) {
 	userId,err := getUserId(c)
 	if err != nil{
@@ -52,5 +56,23 @@ func (h *Handler) updateVariablesUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK,StatusResponse{
 		Status: "ok",
+	})
+}
+
+func (h *Handler) getAllVariables(c *gin.Context){
+	userId,err := getUserId(c)
+	
+	if err != nil{
+		NewErrorResponse(c,http.StatusInternalServerError,"user id not found")
+		return
+	}
+	variables, err := h.service.User.GetAllVariables(userId)
+	if err != nil {
+		NewErrorResponse(c,http.StatusInternalServerError,err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK,getAllVariablesResponse{
+		Data: variables,
 	})
 }

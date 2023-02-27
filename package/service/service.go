@@ -31,6 +31,7 @@ type BooksItem interface {
 type User interface {
 	Create(userId int, userVariables structure.UsersVariables) (int, error)
 	Update(userId int, input structure.UpdateUserVariables) error
+	GetAllVariables(userId int) (structure.UsersVariables,error)
 }
 
 type Service struct {
