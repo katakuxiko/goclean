@@ -130,10 +130,18 @@ func (h *Handler) deleteItem(c *gin.Context) {
 
 func (h *Handler) getItemToNextPage(c *gin.Context){
 	userId, err := getUserId(c)
+	if err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, "invalid user")
+		return
+	}
 	listId, err := strconv.Atoi(c.Param("id"))
-
+	if err != nil {
+		NewErrorResponse(c, http.StatusBadRequest, "invalid list id param")
+		return
+	}
 	variables := c.Query("variables")
-	id,err := h.service.BooksItem.GetItemToNextPage(userId,listId,variables)
+	page := c.Query("page")
+	id,err := h.service.BooksItem.GetItemToNextPage(userId,listId,variables,page)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

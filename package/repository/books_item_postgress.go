@@ -81,6 +81,7 @@ func (r *BooksItemPostgress) GetAll(userId int, listId int, page int) ([]structu
 		itemsMarshalSolo.Done = item.Done
 		json.Unmarshal(item.Buttons, &buttons)
 		itemsMarshalSolo.Buttons = buttons
+		itemsMarshalSolo.Page = item.Page
 		itemsMarshal = append(itemsMarshal,itemsMarshalSolo)
 	}
 	return itemsMarshal, nil
@@ -90,7 +91,7 @@ func (r *BooksItemPostgress) GetById(userId int, itemId int) (structure.BookdIte
 	var itemsMarshal structure.BookdItem
 	var buttons []structure.ButtonStruct
 
-	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.Buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
+	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.Buttons, ti.condition, ti.page FROM %s ti INNER JOIN %s li on li.item_id = ti.id
 									INNER JOIN %s ul on ul.list_id = li.list_id WHERE ti.id = $1 `, booksItemTable, listItemsTable, usersListsTable)
 	err := r.db.Get(&item, query, itemId); 
 	json.Unmarshal(item.Buttons, &buttons)
@@ -100,6 +101,8 @@ func (r *BooksItemPostgress) GetById(userId int, itemId int) (structure.BookdIte
 	itemsMarshal.Title=item.Title
 	itemsMarshal.Condition=item.Condition
 	itemsMarshal.Buttons= buttons
+	itemsMarshal.Page = item.Page
+
 	if err != nil {
 		return itemsMarshal, err
 	}

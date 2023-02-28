@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -41,8 +42,19 @@ func (s *BooksItemService) 	Update(userId, itemId int, input structure.UpdateIte
 	}
 	return s.repo.Update(userId,itemId,input)
 }
-func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables string)(int,error){
-	items, err := s.repo.GetAll(userId,listId, 3);
+func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page string)(int,error){
+	fmt.Print(page)
+	pageN, err := strconv.ParseInt(page,0,32)
+	if variables == "none" {
+		return 0, err
+	}
+	if err != nil {
+		return 0,err
+	}
+	items, err := s.repo.GetAll(userId,listId, int(pageN));
+	if err != nil {
+		return 0,err
+	}
 	// fmt.Print(items)
 	// var filteredItems []structure.BookdItem 
 	var id int
@@ -84,7 +96,7 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables string)
 				checks = append(checks, false)
 			}
 		}
-
+		fmt.Printf("Name: %s, Value: %d, id: %d, page: %d\n",name, value, bi.Id, bi.Page)
 	}
 		
 	}
@@ -99,15 +111,4 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables string)
 	}
 }
 	return id, err
-}
-
-func containsFalse(bools []bool) bool {
-    result := true
-    for _, b := range bools {
-        if !b {
-            result = false
-            break
-        }
-    }
-    return result
 }

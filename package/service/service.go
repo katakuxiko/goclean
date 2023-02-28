@@ -26,7 +26,7 @@ type BooksItem interface {
 	GetById(userId int, itemId int) (structure.BookdItem,error)
 	Delete(userId int, itemId int)error
 	Update(userId, itemId int, input structure.UpdateItemInput) error
-	GetItemToNextPage(serId,listId int,variables string)(int,error)
+	GetItemToNextPage(userId,listId int,variables,page string)(int,error)
 }
 
 type User interface {
