@@ -44,6 +44,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			{
 				items.POST("/", h.createItem)
 				items.GET("/", h.getAllItems)
+				items.GET("/item", h.getItemToNextPage)
 
 			}
 		}

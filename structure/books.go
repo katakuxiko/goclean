@@ -31,8 +31,9 @@ type BookdItem struct {
 	Description string `json:"description" db:"description"`
 	Done        bool   `json:"done" db:"done"`
 	Buttons []ButtonStruct `json:"buttons" db:"buttons"`
-	// Variables []string `json:"variables" db:"variables"`
 	Condition string `json:"condition" db:"condition"`
+	Page        int   `json:"page" db:"page"`
+
 }
 type BookdItemSelect struct {
 	Id          int    `json:"id" db:"id"`
@@ -40,8 +41,8 @@ type BookdItemSelect struct {
 	Description string `json:"description" db:"description"`
 	Done        bool   `json:"done" db:"done"`
 	Buttons []byte `json:"buttons" db:"buttons"`
-	// Variables []string `json:"variables" db:"variables"`
 	Condition string `json:"condition" db:"condition"`
+	Page        int   `json:"page" db:"page"`
 }
 
 

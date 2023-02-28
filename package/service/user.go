@@ -28,3 +28,4 @@ func (s *UserService)  Update(userId int, input structure.UpdateUserVariables) e
 func (s *UserService) GetAllVariables(userId int) (structure.UsersVariables,error){
 	return s.repo.GetAllVariables(userId)
 }
+

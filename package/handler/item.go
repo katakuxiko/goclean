@@ -127,3 +127,17 @@ func (h *Handler) deleteItem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, StatusResponse{"ok"})
 }
+
+func (h *Handler) getItemToNextPage(c *gin.Context){
+	userId, err := getUserId(c)
+	listId, err := strconv.Atoi(c.Param("id"))
+
+	variables := c.Query("variables")
+	id,err := h.service.BooksItem.GetItemToNextPage(userId,listId,variables)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, id)
+
+}

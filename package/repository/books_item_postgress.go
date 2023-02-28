@@ -47,14 +47,30 @@ func (r *BooksItemPostgress) Create(listId int, item structure.BookdItem)(int, e
 	return itemId, tx.Commit()
 }
 
-func (r *BooksItemPostgress) GetAll(userId int, listId int) ([]structure.BookdItem, error){
+func (r *BooksItemPostgress) GetAll(userId int, listId int, page int) ([]structure.BookdItem, error){
+	var query string
+	if page != -1 {
+		query = fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition, ti.page FROM %s ti INNER JOIN %s li on li.item_id = ti.id
+									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 and ti.page = $2 ORDER by ti.id`, booksItemTable, listItemsTable, usersListsTable)
+	} else {
+		query = fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition, ti.page FROM %s ti INNER JOIN %s li on li.item_id = ti.id
+									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 ORDER by ti.id`, booksItemTable, listItemsTable, usersListsTable)
+	}
+
 	var items []structure.BookdItemSelect
 	var itemsMarshal []structure.BookdItem
 	var itemsMarshalSolo structure.BookdItem
-	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
-									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 ORDER by id`, booksItemTable, listItemsTable, usersListsTable)
-	if err := r.db.Select(&items, query, listId); err != nil {
-		return nil, err
+	// query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done, ti.buttons, ti.condition FROM %s ti INNER JOIN %s li on li.item_id = ti.id
+	// 								INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 ORDER by id`, booksItemTable, listItemsTable, usersListsTable)
+	
+	if page != -1 {
+		if err := r.db.Select(&items, query, listId,page); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := r.db.Select(&items, query, listId); err != nil {
+			return nil, err
+		}
 	}
 	var buttons []structure.ButtonStruct
 	for _, item := range items {
@@ -97,7 +113,7 @@ func(r *BooksItemPostgress)	Delete(userId int, itemId int)error{
 	_,err := r.db.Exec(query, userId, itemId)
 	return err
 }
-func (r *BooksItemPostgress) 	Update(userId, itemId int, input structure.UpdateItemInput) error{
+func (r *BooksItemPostgress) Update(userId, itemId int, input structure.UpdateItemInput) error{
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -131,3 +147,4 @@ func (r *BooksItemPostgress) 	Update(userId, itemId int, input structure.UpdateI
 	_, err := r.db.Exec(query, args...)
 	return err
 }
+
