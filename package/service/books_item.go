@@ -51,6 +51,7 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page st
 	if err != nil {
 		return 0,err
 	}
+
 	items, err := s.repo.GetAll(userId,listId, int(pageN));
 	if err != nil {
 		return 0,err
@@ -58,8 +59,16 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page st
 	// fmt.Print(items)
 	// var filteredItems []structure.BookdItem 
 	var id int
-
-	variable := strings.Split(variables, ",");
+	stingsSplit := fmt.Sprintf("book:%d",listId)
+	unSortedvariable := strings.Split(variables, ",");
+	var variable []string 
+	fmt.Printf("variable: %v\n", unSortedvariable)
+	for _, v := range unSortedvariable {
+		if strings.Split(v, " ")[0] == stingsSplit{
+			variable = append(variable, v)
+		}
+	}
+	fmt.Printf("variable: %v\n", variable)
 	for _, bi := range items {
 	splitetCond := strings.Split(bi.Condition, "; ")
 	var checks []bool
