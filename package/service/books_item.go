@@ -43,7 +43,7 @@ func (s *BooksItemService) 	Update(userId, itemId int, input structure.UpdateIte
 	return s.repo.Update(userId,itemId,input)
 }
 func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page string)(int,error){
-	fmt.Print(page)
+	// fmt.Print(page)
 	pageN, err := strconv.ParseInt(page,0,32)
 	if variables == "none" {
 		return 0, err
@@ -62,13 +62,13 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page st
 	stingsSplit := fmt.Sprintf("book:%d",listId)
 	unSortedvariable := strings.Split(variables, ",");
 	var variable []string 
-	fmt.Printf("variable: %v\n", unSortedvariable)
+	// fmt.Printf("variable: %v\n", unSortedvariable)
 	for _, v := range unSortedvariable {
 		if strings.Split(v, " ")[0] == stingsSplit{
 			variable = append(variable, v)
 		}
 	}
-	fmt.Printf("variable: %v\n", variable)
+	// fmt.Printf("variable: %v\n", variable)
 	for _, bi := range items {
 	splitetCond := strings.Split(bi.Condition, "; ")
 	var checks []bool
@@ -87,13 +87,13 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page st
 			}
 		switch splitetCondSymb{
 		case ">":
-			if(splitetCondName==name&&value>splitetCondValue){
+			if(splitetCondName==name&&value>=splitetCondValue){
 				checks = append(checks, true)
 			} else {
 				checks = append(checks, false)
 			}
 		case "<":
-			if(splitetCondName==name&&value<splitetCondValue){
+			if(splitetCondName==name&&value<=splitetCondValue){
 				checks = append(checks, true)
 			} else {
 				checks = append(checks, false)
@@ -105,7 +105,7 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page st
 				checks = append(checks, false)
 			}
 		}
-		fmt.Printf("Name: %s, Value: %d, id: %d, page: %d\n",name, value, bi.Id, bi.Page)
+		// fmt.Printf("Name: %s, Value: %d, id: %d, page: %d cond:%s\n",name, value, bi.Id, bi.Page, bi.Condition)
 	}
 		
 	}
@@ -118,6 +118,7 @@ func (s *BooksItemService)	GetItemToNextPage(userId,listId int,variables,page st
 	if counter == len(splitetCond){
 		id = bi.Id
 	}
+	fmt.Printf("checks: %v\n", checks)
 }
 	return id, err
 }
