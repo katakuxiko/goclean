@@ -29,8 +29,9 @@ func (r *BooksItemPostgress) Create(listId int, item structure.BookdItem)(int, e
 	}
 
 	var itemId int
-	createItemQuery := fmt.Sprintf("INSERT INTO %s (title, description,buttons,condition) values ($1, $2, $3, $4) RETURNING id",booksItemTable)
-	row := tx.QueryRow(createItemQuery, item.Title, item.Description, btn, item.Condition)
+	createItemQuery := fmt.Sprintf("INSERT INTO %s (title, description,buttons,condition,page) values ($1, $2, $3, $4, $5) RETURNING id",booksItemTable)
+	row := tx.QueryRow(createItemQuery, item.Title, item.Description, btn, item.Condition, item.Page)
+	fmt.Print(item.Page)
 	err = row.Scan(&itemId)
 	if err != nil {
 		tx.Rollback()
