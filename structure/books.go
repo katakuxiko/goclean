@@ -60,7 +60,9 @@ type UpdateItemInput struct {
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
 	Done        *bool   `json:"done"`
-
+	Buttons *[]ButtonStruct `json:"buttons"`
+	Condition *string `json:"condition"`
+	Page        *int   `json:"page"`
 }
 
 func (i UpdateListInput) Validate() error {

@@ -121,6 +121,7 @@ func (r *BooksItemPostgress) Update(userId, itemId int, input structure.UpdateIt
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
+    btn, err := json.Marshal(&input.Buttons);
 
 	if input.Title != nil {
 		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
@@ -138,17 +139,29 @@ func (r *BooksItemPostgress) Update(userId, itemId int, input structure.UpdateIt
 		args = append(args, *input.Done)
 		argId++
 	}
+	if input.Condition != nil {
+		setValues = append(setValues, fmt.Sprintf("condition=$%d", argId))
+		args = append(args, *input.Condition)
+		argId++
+	}
+	if input.Buttons != nil {
+		setValues = append(setValues, fmt.Sprintf("buttons=$%d", argId))
+		args = append(args, btn)
+		argId++
+	}
+	if input.Page != nil {
+		setValues = append(setValues, fmt.Sprintf("page=$%d", argId))
+		args = append(args, *input.Page)
+		argId++
+	}
 
 	setQuery := strings.Join(setValues, ", ")
-
 	query := fmt.Sprintf(`UPDATE %s ti SET %s FROM %s li, %s ul
 									WHERE ti.id = li.item_id AND li.list_id = ul.list_id AND ul.user_id = $%d AND ti.id = $%d`,
 		booksItemTable, setQuery, listItemsTable,usersListsTable, argId, argId+1)
-	args = append(args, itemId, userId)
+	args = append(args, userId	, itemId)
 
-
-
-	_, err := r.db.Exec(query, args...)
+	_, err = r.db.Exec(query, args...)
 	return err
 }
 
